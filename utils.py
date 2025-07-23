@@ -28,7 +28,6 @@ def general_overview(books_df):
     return result
 
 def categories_overview(books_df):
-
     books_df['Price'] = books_df['Price'].str[1:].astype(float)
     stats_category = books_df.groupby('Category').agg(
         books_total=('Title', 'count'),

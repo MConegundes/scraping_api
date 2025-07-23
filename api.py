@@ -67,7 +67,7 @@ async def get_overview_by_category():
 @app.get("/v1/books/top-rated")
 async def get_top_rated():
     index_found = books_df.index[books_df['Rating'] == 'Five'].tolist()
-    return books_df.loc[index_found, ['Title', 'Link']].to_string(index=False)
+    return books_df.loc[index_found, ['Title', 'Link']]
     
 @app.get("/v1/books/price-range?min={min}&max={max}")
 async def get_book_by_price(min: float, max: float):
