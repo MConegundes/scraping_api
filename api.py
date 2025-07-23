@@ -46,7 +46,8 @@ async def get_book_title_cat(title: str, category: str):
 
 @app.get("/v1/categories")
 async def get_categories():
-    return utils.sorted_categories(books_df)
+    result = pd.DataFrame(utils.sorted_categories(books_df), columns=['categorys'])
+    return result
 
 @app.get("/v1/health")
 async def get_api_status():

@@ -28,16 +28,14 @@ def general_overview(books_df):
     return result
 
 def categories_overview(books_df):
-    total_livros = books_df.groupby('Category').count()['Title']
 
     books_df['Price'] = books_df['Price'].str[1:].astype(float)
-    preco_medio = books_df.groupby('Category').mean('Price')
+    stats_category = books_df.groupby('Category').agg(
+        books_total=('Title', 'count'),
+        price_average=('Price', 'mean')
+    ).reset_index()
 
-    result = {
-        "total_books": total_livros,
-        "average_price": preco_medio
-        }
-    return result
+    return stats_category
 
 def books_by_price_range(books_df, max: float, min: float):
     books_df['Price'] = books_df['Price'].str[1:].astype(float)
