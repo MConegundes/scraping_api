@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi import Depends, HTTPException, status
 from pydantic import BaseModel
 import pandas as pd
+import utils
 
 app = FastAPI(
     title="My FastAPI API",
@@ -9,7 +10,10 @@ app = FastAPI(
     description="API de Exemplo com FastAPI"
 )
 
-books_df = pd.read_csv('books_data.csv', index_col='index')
+try:
+    books_df = pd.read_csv('books_data.csv', index_col='index')
+except:
+    raise HTTPException(status_code=404, detail="Books data not found")
 
 @app.get("/v1/books")
 async def get_books_title():
@@ -30,7 +34,8 @@ async def get_book(id_search: int):
 async def get_book_title_cat(title: str, category: str):
     if (books_df['Title'].str.contains(title).any() or 
         books_df['Category'].str.contains(category)):
-        index_found = books_df.index[(
+        
+        return books_df.index[(
             (books_df['Title'].str.contains(title)) | 
             (books_df['Category'].str.contains(category))
             )].tolist()
@@ -38,6 +43,33 @@ async def get_book_title_cat(title: str, category: str):
 
 @app.get("/v1/categories")
 async def get_categories():
-    categories = books_df['Category'].unique()
-    categories.sort()
-    return categories
+    return utils.sorted_categories(books_df)
+
+@app.get("/v1/health")
+async def get_api_status():
+    if books_df in locals() and len(books_df) > 0:
+        raise HTTPException(status_code=202, detail="API status: OK - Books data: Ok")
+    else: 
+        raise HTTPException(status_code=204, detail="API status: OK - Books data: Absent")
+
+@app.get("/v1/stats/overview")
+async def get_overview():
+    return utils.general_overview(books_df)
+
+@app.get("/v1/stats/categories")
+async def get_overview_by_category():
+    return utils.categories_overview(books_df)
+
+@app.get("/v1/books/top-rated")
+async def get_top_rated():
+    index_found = books_df.index[books_df['Rating'] == 'Five'].tolist()
+    return books_df.loc[index_found, ['Title', 'Link']].to_string(index=False)
+    
+@app.get("/v1/books/price-range?min={min}&max={max}")
+async def get_book_by_price(min: float, max: float):
+    if 0 <= min <= max:
+        index_found = utils.books_by_price_range(books_df, max, min)
+        return books_df.loc[index_found, ['Title', 'Link', 'Price']].to_string(index=False)    
+    raise HTTPException(status_code=404, detail="Entre com valores validos para preço minimo e maximo")
+
+    
