@@ -1,3 +1,6 @@
+# venv\Scripts\activate
+# uvicorn api:app --reload  
+
 from fastapi import FastAPI
 from fastapi import Depends, HTTPException, status
 from pydantic import BaseModel
@@ -19,10 +22,10 @@ except:
 async def get_books_title():
     return books_df['Title']
 
-class Item(BaseModel):
-    id_book: int = None     # id do item
-    title: str = None       # nome opcional
-    price: float = None     # preço opcional
+# class Item(BaseModel):
+#     id_book: int = None     # id do item
+#     title: str = None       # nome opcional
+#     price: float = None     # preço opcional
 
 @app.get("/v1/books/{id_search}")
 async def get_book(id_search: int):
@@ -33,12 +36,12 @@ async def get_book(id_search: int):
 @app.get("/v1/books/search?title={title}&category={category}")
 async def get_book_title_cat(title: str, category: str):
     if (books_df['Title'].str.contains(title).any() or 
-        books_df['Category'].str.contains(category)):
-        
-        return books_df.index[(
+        books_df['Category'].str.contains(category).any()):
+        index_found = books_df.index[(
             (books_df['Title'].str.contains(title)) | 
             (books_df['Category'].str.contains(category))
             )].tolist()
+        return books_df.loc[index_found, ['Title', 'Link']]
     raise HTTPException(status_code=404, detail="Item não encontrado")
 
 @app.get("/v1/categories")
