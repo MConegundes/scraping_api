@@ -30,18 +30,21 @@ def general_overview(books_df):
 def categories_overview(books_df):
     books_df['Price'] = books_df['Price'].str[1:].astype(float)
     stats_category = books_df.groupby('Category').agg(
-        books_total=('Title', 'count'),
+        books_total=('Title', 'count'), 
         price_average=('Price', 'mean')
-    ).reset_index()
-
-    return stats_category
+        ).reset_index()
+    
+    result = {
+        "stats": stats_category 
+    }
+    return result
 
 def books_by_price_range(books_df, max: float, min: float):
     books_df['Price'] = books_df['Price'].str[1:].astype(float)
     index_found = books_df.index[(
         (books_df['Price'] <= max) & 
         (books_df['Price'] >= min)
-        )].tolist()
+        )]
     return index_found
 
 

@@ -60,9 +60,12 @@ async def get_api_status():
 async def get_overview():
     return utils.general_overview(books_df)
 
+import utils
+books_df = pd.read_csv('books_data.csv', index_col='index')
 @app.get("/v1/stats/categories")
 async def get_overview_by_category():
-    return utils.categories_overview(books_df)
+    df = utils.categories_overview(books_df)
+    return df.to_dict(orient="records")
 
 @app.get("/v1/books/top-rated")
 async def get_top_rated():
