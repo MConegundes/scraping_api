@@ -34,10 +34,9 @@ def categories_overview(books_df):
         price_average=('Price', 'mean')
         ).reset_index()
     
-    result = {
-        "stats": stats_category 
-    }
-    return result
+    stats_category = stats_category.to_dict()
+
+    return stats_category
 
 def books_by_price_range(books_df, max: float, min: float):
     books_df['Price'] = books_df['Price'].str[1:].astype(float)
