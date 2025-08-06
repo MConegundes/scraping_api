@@ -15,7 +15,7 @@ app = FastAPI(
     title="My FastAPI API",
     version="1.0.0",
     description="API de Exemplo com FastAPI"
-)
+    )
 
 @app.get("/v1/books")
 async def get_books_title():
