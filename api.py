@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi import Depends, HTTPException, status
 from pydantic import BaseModel
 from bs4 import BeautifulSoup as BfS4
+from mangum import Mangum 
 import pandas as pd
 import requests
 import utils
@@ -82,3 +83,7 @@ async def get_categories_stats():
 @app.get("/v1/scraping/trigger")
 async def scraple_books():
     return scraple.scraple_books()
+
+
+# Wrap app with handler for Vercel
+handler = Mangum(app)
