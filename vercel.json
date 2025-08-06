@@ -14,7 +14,7 @@
     ],
     "functions": {
         "api.py": {
-            "includeFiles": ["books_data.csv"]
+            "includeFiles": "books_data.csv"
         }
     }
 }
