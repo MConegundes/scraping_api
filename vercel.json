@@ -11,5 +11,10 @@
             "src": "/(.*)", 
             "dest": "api.py"
         }
-    ]
+    ],
+    "functions": {
+        "api.py": {
+            "includeFiles": ["books_data.csv"]
+        }
+    }
 }
