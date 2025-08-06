@@ -4,8 +4,11 @@
 from fastapi import FastAPI
 from fastapi import Depends, HTTPException, status
 from pydantic import BaseModel
+from bs4 import BeautifulSoup as BfS4
 import pandas as pd
+import requests
 import utils
+import scraple
 
 app = FastAPI(
     title="My FastAPI API",
@@ -63,10 +66,10 @@ async def get_categories():
 
 @app.get("/v1/health") # não funciona
 async def get_api_status():
-    if books_df in locals() and len(books_df) > 0:
-        raise HTTPException(status_code=202, detail="API status: OK - Books data: Ok")
+    if len(books_df) > 0:
+        raise HTTPException(status_code=202, detail="API status: OK - Books data: OK")
     else: 
-        raise HTTPException(status_code=204, detail="API status: OK - Books data: Absent")
+        raise HTTPException(status_code=503, detail="API status: OK - Books data: Absent")
 
 @app.get("/v1/stats/overview")
 async def get_overview():
@@ -76,7 +79,6 @@ async def get_overview():
 async def get_categories_stats():
     return utils.categories_overview(books_df)
 
-    
-
-
-    
+@app.get("/v1/scraping/trigger")
+async def scraple_books():
+    return scraple.scraple_books()
